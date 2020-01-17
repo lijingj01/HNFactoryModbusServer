@@ -1,3 +1,4 @@
-id,ip,port,type,comments,rate
-1,127.0.0.1,502,GJPLC1,试验工厂PLC1#机柜,10
-2,127.0.0.1,503,GJPLC2,试验工厂PLC2#机柜,10
+id,ip,port,type,comments,rate,startaddress
+1,192.168.2.2,502,GJPLC1,试验工厂PLC1#机柜,10,0
+2,192.168.2.3,502,GJPLC2,试验工厂PLC2#机柜,10,0
+3,192.168.2.4,502,GJPLC3,试验工厂PLC3#机柜,10,0

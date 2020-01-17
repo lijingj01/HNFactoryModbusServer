@@ -8,7 +8,7 @@ namespace HNFactoryModbusServer.Modbus
 {
     internal class ModBusSerialPortWrapper : ModBusWrapper, IDisposable
     {
-        public ModBusSerialPortWrapper(string strPLCServerIP, int iPLCServerPort) : base(strPLCServerIP, iPLCServerPort) { }
+        public ModBusSerialPortWrapper(string strPLCServerIP, int iPLCServerPort, short startAddress) : base(strPLCServerIP, iPLCServerPort,startAddress) { }
 
         public override void Connect()
         {

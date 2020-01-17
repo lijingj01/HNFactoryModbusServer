@@ -32,11 +32,18 @@ namespace HNFactoryModbusServer.Modbus
         public int _port { get; set; }
         public string _name { get; set; }
         // public TurbineType _type{ get; set; }
+        /// <summary>
+        /// PLC服务器编码
+        /// </summary>
         public string _typeStr { get; set; }
         /// <summary>
         /// 刷新频率（秒）
         /// </summary>
         public int _rate { get; set; }
+        /// <summary>
+        /// PLC读取数据的地址起点
+        /// </summary>
+        public short _startaddress { get; set; }
         /// <summary>
         /// 设备id,默认为1
         /// </summary>
@@ -59,9 +66,13 @@ namespace HNFactoryModbusServer.Modbus
         /// PLC连接对象
         /// </summary>
         public ModBusWrapper Wrapper = null;
+        /// <summary>
+        /// PLC里面的传感器控制器地址集合
+        /// </summary>
+        public PLCAddressSetCollection AddressSets = null;
         #endregion
 
-        public PLCNode(int id,string ip,int port, string typeStr, string comments,int rate)
+        public PLCNode(int id, string ip, int port, string typeStr, string comments, int rate, short startaddress)
         {
             _id = id;
             _plcip = ip;
@@ -70,25 +81,36 @@ namespace HNFactoryModbusServer.Modbus
             _name = comments;
             _status = "服务未连接";
             _rate = rate;
+            _startaddress = startaddress;
 
-            Wrapper = ModBusWrapper.CreateInstance(Protocol.TCPIP, ip, port);
+            Wrapper = ModBusWrapper.CreateInstance(Protocol.TCPIP, ip, port, startaddress);
+
+
         }
 
         #region 连接关闭服务器操作
         public void open()
         {
-            Wrapper.Connect();
+            #region 加载出对应的设备传感器集合
+            string strFactoryId = "G01";
+            AddressSets = DataLogHelper.GetPLCAddressSets(strFactoryId, _typeStr);
+            #endregion
+            //定义需要读取的寄存器数量
+            Wrapper.RegCount = Convert.ToInt16(AddressSets.Count());
 
+            Wrapper.Connect();
             try
             {
                 _thread = new Thread(Receive) { Name = _id.ToString() };
                 _thread.Start();
                 _status = "服务连接中";
                 _isRunning = true;
+
+                ConnectSocketServer();
             }
             catch (Exception ex)
             {
-                string errorStr = "[" + _name + "]" + "服务启动失败!" + ex.Message;
+                string errorStr = "[" + _name + "]" + "服务连接失败!" + ex.Message;
                 MessageBox.Show(errorStr, "出错了", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -112,7 +134,7 @@ namespace HNFactoryModbusServer.Modbus
             {
 
             }
-            
+
         }
 
         /// <summary>
@@ -137,7 +159,56 @@ namespace HNFactoryModbusServer.Modbus
         /// <param name="data"></param>
         private void RequestToDB(byte[] data)
         {
-            string strMessage = Encoding.ASCII.GetString(data);
+            //地址起点
+            #region 对寄存器数据进行按需提取
+            int iIndex = 0;
+
+            SensorDataCollection sensorDatas = new SensorDataCollection();
+            foreach (PLCAddressSet addressSet in AddressSets)
+            {
+                byte[] btInfo = new byte[addressSet.ValueLength];
+                if (data.Length > iIndex)
+                {
+                    try
+                    {
+                        //按指定的寄存器地址来提取数据
+                        Array.Copy(data, iIndex, btInfo, 0, addressSet.ValueLength);
+
+                        //针对提取出来的数据，进行解码操作
+                        string strBxString = ConvertTools.BytesToHexString(btInfo);
+                        decimal deValue = decimal.Zero;
+
+                        deValue = Convert.ToInt32(strBxString, 16);
+                        //如果是过程值数据需要对参数进行缩放
+                        if (addressSet.ValueType == "NumberValue")
+                        {
+                            deValue *= addressSet.Scale;
+                        }
+
+                        SensorData sensorData = new SensorData()
+                        {
+                            FactoryId = addressSet.FactoryId,
+                            PLCId = addressSet.PLC_Id,
+                            PLCAddress = addressSet.PLC_Address,
+                            SensorId = addressSet.SensorId,
+                            ValueType = addressSet.ValueType,
+                            SensorValue = Convert.ToDecimal(strBxString),
+                            ReceiveTime = DateTime.Now
+                        };
+                        sensorDatas.Add(sensorData);
+                    }
+                    catch { }
+
+                    //更新下一个寄存器起点
+                    iIndex += addressSet.ValueLength;
+                }
+            }
+            #endregion
+
+            #region 读取总记录写入数据库
+
+            //string strMessage = Encoding.ASCII.GetString(data);
+            string strMessage = string.Format("[{0}]读取设备数据完成", _typeStr);
             ModbusMessageLog logitem = new ModbusMessageLog()
             {
                 LogTime = DateTime.Now,
@@ -145,14 +216,16 @@ namespace HNFactoryModbusServer.Modbus
                 FunctionCode = FunctionCode.Read.ToString(),
                 MessageFrame = data,
                 ProtocolDataUnit = data,
-                SlaveAddress = ModBusTCPIPWrapper.StartingAddress.ToString(),
+                SlaveAddress = _startaddress.ToString(),
                 TransactionId = Wrapper.CurrentDataIndex.ToString()
             };
 
             DataLogHelper.AddModbusMessageLog(logitem);
 
+            #endregion
+
             //将数据传入后台处理
-            string strToText = logitem.ToJsonString();
+            string strToText = sensorDatas.ToJsonString();
 
             SendToSocketServer(strToText);
         }
@@ -413,13 +486,14 @@ namespace HNFactoryModbusServer.Modbus
                 {
 
                     int id = int.Parse(dt.Rows[i][0].ToString());
-                    string ip =  dt.Rows[i][1].ToString();
+                    string ip = dt.Rows[i][1].ToString();
                     int port = int.Parse(dt.Rows[i][2].ToString());
                     string typeStr = dt.Rows[i][3].ToString();
                     string comments = dt.Rows[i][4].ToString();
                     int rate = int.Parse(dt.Rows[i][5].ToString());
+                    short startaddress = short.Parse(dt.Rows[i][6].ToString());
 
-                    PLCNode node = new PLCNode(id, ip, port, typeStr, comments, rate);
+                    PLCNode node = new PLCNode(id, ip, port, typeStr, comments, rate, startaddress);
                     _nodeList.Add(node);
                 }
                 _initFlag = true;//已初始化
@@ -483,4 +557,6 @@ namespace HNFactoryModbusServer.Modbus
             }
         }
     }
+
+
 }

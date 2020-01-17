@@ -30,6 +30,15 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.btnConAll = new System.Windows.Forms.Button();
+            this.dvPLCServer = new System.Windows.Forms.DataGridView();
+            this.Col_No = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PLC_Title = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PLC_IP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PLC_Port = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PLC_Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PLC_RefRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button4 = new System.Windows.Forms.Button();
             this.button_play = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -45,20 +54,11 @@
             this.Column_Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nodeMgrBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.dvPLCServer = new System.Windows.Forms.DataGridView();
-            this.btnConAll = new System.Windows.Forms.Button();
-            this.Col_No = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PLC_Title = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PLC_IP = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PLC_Port = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PLC_Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PLC_RefRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.button5 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dvPLCServer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nodeMgrBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dvPLCServer)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -74,14 +74,99 @@
             this.groupBox1.Controls.Add(this.button_start);
             this.groupBox1.Controls.Add(this.button_stop);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox1.Location = new System.Drawing.Point(0, 379);
+            this.groupBox1.Location = new System.Drawing.Point(0, 377);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 5, 6, 5);
-            this.groupBox1.Size = new System.Drawing.Size(1168, 444);
+            this.groupBox1.Size = new System.Drawing.Size(1174, 536);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(1014, 468);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(138, 46);
+            this.button5.TabIndex = 11;
+            this.button5.Text = "全部断开";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // btnConAll
+            // 
+            this.btnConAll.Location = new System.Drawing.Point(851, 468);
+            this.btnConAll.Name = "btnConAll";
+            this.btnConAll.Size = new System.Drawing.Size(138, 46);
+            this.btnConAll.TabIndex = 10;
+            this.btnConAll.Text = "全部连接";
+            this.btnConAll.UseVisualStyleBackColor = true;
+            this.btnConAll.Click += new System.EventHandler(this.btnConAll_Click);
+            // 
+            // dvPLCServer
+            // 
+            this.dvPLCServer.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dvPLCServer.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Col_No,
+            this.PLC_Title,
+            this.PLC_IP,
+            this.PLC_Port,
+            this.PLC_Status,
+            this.PLC_RefRate});
+            this.dvPLCServer.Location = new System.Drawing.Point(22, 111);
+            this.dvPLCServer.Name = "dvPLCServer";
+            this.dvPLCServer.RowHeadersWidth = 72;
+            this.dvPLCServer.RowTemplate.Height = 33;
+            this.dvPLCServer.Size = new System.Drawing.Size(1130, 336);
+            this.dvPLCServer.TabIndex = 9;
+            // 
+            // Col_No
+            // 
+            this.Col_No.HeaderText = "编号";
+            this.Col_No.MinimumWidth = 9;
+            this.Col_No.Name = "Col_No";
+            this.Col_No.ReadOnly = true;
+            this.Col_No.Width = 120;
+            // 
+            // PLC_Title
+            // 
+            this.PLC_Title.HeaderText = "PLC服务器";
+            this.PLC_Title.MinimumWidth = 9;
+            this.PLC_Title.Name = "PLC_Title";
+            this.PLC_Title.ReadOnly = true;
+            this.PLC_Title.Width = 200;
+            // 
+            // PLC_IP
+            // 
+            this.PLC_IP.HeaderText = "服务器IP";
+            this.PLC_IP.MinimumWidth = 9;
+            this.PLC_IP.Name = "PLC_IP";
+            this.PLC_IP.ReadOnly = true;
+            this.PLC_IP.Width = 200;
+            // 
+            // PLC_Port
+            // 
+            this.PLC_Port.HeaderText = "服务器端口";
+            this.PLC_Port.MinimumWidth = 9;
+            this.PLC_Port.Name = "PLC_Port";
+            this.PLC_Port.ReadOnly = true;
+            this.PLC_Port.Width = 200;
+            // 
+            // PLC_Status
+            // 
+            this.PLC_Status.HeaderText = "连接状态";
+            this.PLC_Status.MinimumWidth = 9;
+            this.PLC_Status.Name = "PLC_Status";
+            this.PLC_Status.ReadOnly = true;
+            this.PLC_Status.Width = 200;
+            // 
+            // PLC_RefRate
+            // 
+            this.PLC_RefRate.HeaderText = "刷新频率";
+            this.PLC_RefRate.MinimumWidth = 9;
+            this.PLC_RefRate.Name = "PLC_RefRate";
+            this.PLC_RefRate.ReadOnly = true;
+            this.PLC_RefRate.Width = 175;
             // 
             // button4
             // 
@@ -180,7 +265,7 @@
             this.dataGridView1.RowHeadersWidth = 72;
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(1168, 379);
+            this.dataGridView1.Size = new System.Drawing.Size(1174, 377);
             this.dataGridView1.TabIndex = 9;
             // 
             // Column_No
@@ -223,102 +308,17 @@
             this.timer1.Tag = "更新窗口显示";
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // dvPLCServer
-            // 
-            this.dvPLCServer.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dvPLCServer.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Col_No,
-            this.PLC_Title,
-            this.PLC_IP,
-            this.PLC_Port,
-            this.PLC_Status,
-            this.PLC_RefRate});
-            this.dvPLCServer.Location = new System.Drawing.Point(22, 111);
-            this.dvPLCServer.Name = "dvPLCServer";
-            this.dvPLCServer.RowHeadersWidth = 72;
-            this.dvPLCServer.RowTemplate.Height = 33;
-            this.dvPLCServer.Size = new System.Drawing.Size(1130, 244);
-            this.dvPLCServer.TabIndex = 9;
-            // 
-            // btnConAll
-            // 
-            this.btnConAll.Location = new System.Drawing.Point(851, 386);
-            this.btnConAll.Name = "btnConAll";
-            this.btnConAll.Size = new System.Drawing.Size(138, 46);
-            this.btnConAll.TabIndex = 10;
-            this.btnConAll.Text = "全部连接";
-            this.btnConAll.UseVisualStyleBackColor = true;
-            this.btnConAll.Click += new System.EventHandler(this.btnConAll_Click);
-            // 
-            // Col_No
-            // 
-            this.Col_No.HeaderText = "编号";
-            this.Col_No.MinimumWidth = 9;
-            this.Col_No.Name = "Col_No";
-            this.Col_No.ReadOnly = true;
-            this.Col_No.Width = 120;
-            // 
-            // PLC_Title
-            // 
-            this.PLC_Title.HeaderText = "PLC服务器";
-            this.PLC_Title.MinimumWidth = 9;
-            this.PLC_Title.Name = "PLC_Title";
-            this.PLC_Title.ReadOnly = true;
-            this.PLC_Title.Width = 200;
-            // 
-            // PLC_IP
-            // 
-            this.PLC_IP.HeaderText = "服务器IP";
-            this.PLC_IP.MinimumWidth = 9;
-            this.PLC_IP.Name = "PLC_IP";
-            this.PLC_IP.ReadOnly = true;
-            this.PLC_IP.Width = 200;
-            // 
-            // PLC_Port
-            // 
-            this.PLC_Port.HeaderText = "服务器端口";
-            this.PLC_Port.MinimumWidth = 9;
-            this.PLC_Port.Name = "PLC_Port";
-            this.PLC_Port.ReadOnly = true;
-            this.PLC_Port.Width = 200;
-            // 
-            // PLC_Status
-            // 
-            this.PLC_Status.HeaderText = "连接状态";
-            this.PLC_Status.MinimumWidth = 9;
-            this.PLC_Status.Name = "PLC_Status";
-            this.PLC_Status.ReadOnly = true;
-            this.PLC_Status.Width = 200;
-            // 
-            // PLC_RefRate
-            // 
-            this.PLC_RefRate.HeaderText = "刷新频率";
-            this.PLC_RefRate.MinimumWidth = 9;
-            this.PLC_RefRate.Name = "PLC_RefRate";
-            this.PLC_RefRate.ReadOnly = true;
-            this.PLC_RefRate.Width = 175;
-            // 
             // timer2
             // 
             this.timer2.Interval = 1000;
             this.timer2.Tag = "更新PLC服务连接状态";
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(1014, 386);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(138, 46);
-            this.button5.TabIndex = 11;
-            this.button5.Text = "全部断开";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
             // ServerMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1168, 823);
+            this.ClientSize = new System.Drawing.Size(1174, 913);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.groupBox1);
             this.MaximizeBox = false;
@@ -327,9 +327,9 @@
             this.Text = "Modbus TCP服务主线程";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServerMainForm_FormClosing);
             this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dvPLCServer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nodeMgrBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dvPLCServer)).EndInit();
             this.ResumeLayout(false);
 
         }

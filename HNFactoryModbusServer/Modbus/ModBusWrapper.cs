@@ -16,17 +16,17 @@ namespace HNFactoryModbusServer.Modbus
     {
         private static ModBusWrapper _Instance;
 
-        public static ModBusWrapper CreateInstance(Protocol protocol, string strPLCServerIP, int iPLCServerPort)
+        public static ModBusWrapper CreateInstance(Protocol protocol, string strPLCServerIP, int iPLCServerPort, short startAddress)
         {
             if (_Instance == null)
             {
                 switch (protocol)
                 {
                     case Protocol.TCPIP:
-                        _Instance = new ModBusTCPIPWrapper(strPLCServerIP,iPLCServerPort);
+                        _Instance = new ModBusTCPIPWrapper(strPLCServerIP,iPLCServerPort,startAddress);
                         break;
                     case Protocol.SerialPort:
-                        _Instance = new ModBusSerialPortWrapper(strPLCServerIP, iPLCServerPort);
+                        _Instance = new ModBusSerialPortWrapper(strPLCServerIP, iPLCServerPort,startAddress);
                         break;
                     default:
                         break;
@@ -53,13 +53,28 @@ namespace HNFactoryModbusServer.Modbus
         }
         #endregion
 
+        /// <summary>
+        /// PLC服务器IP
+        /// </summary>
         public string PLCServerIP { get; set; }
+        /// <summary>
+        /// PLC服务器端口
+        /// </summary>
         public int PLCServerPort { get; set; }
+        /// <summary>
+        /// 读取寄存器地址起点
+        /// </summary>
+        public short StartingAddress { get; set; }
+        /// <summary>
+        /// 读取寄存器数量
+        /// </summary>
+        public short RegCount { get; set; }
 
-        public ModBusWrapper(string strPLCServerIP,int iPLCServerPort)
+        public ModBusWrapper(string strPLCServerIP,int iPLCServerPort,short startAddress)
         {
             this.PLCServerIP = strPLCServerIP;
             this.PLCServerPort = iPLCServerPort;
+            this.StartingAddress = startAddress;
         }
 
         public ILog Logger { get; set; }
